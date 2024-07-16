@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: review
+
+server:
+  port: 8083
