@@ -1,0 +1,4 @@
+app:
+  productServiceUrl: localhost:8081
+  recommendationServiceUrl: localhost:8082
+  reviewServiceUrl: localhost:8083

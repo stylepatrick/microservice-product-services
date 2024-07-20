@@ -6,6 +6,39 @@ spring:
     name: composite-product
 
 app:
-  productServiceUrl: localhost:8081
-  recommendationServiceUrl: localhost:8082
-  reviewServiceUrl: localhost:8083
+  productServiceUrl: ${APP_PRODUCT_SERVICE_URL}
+  recommendationServiceUrl: ${APP_RECOMMENDATION_SERVICE_URL}
+  reviewServiceUrl: ${APP_REVIEW_SERVICE_URL}
+
+api:
+  common:
+    version: 1.0.0
+    title: Sample API
+    description: Description of the API...
+  responseCodes:
+    ok: OK
+    badRequest: Bad Request, invalid format of the request. See response message for more information
+  product-composite:
+    description: Returns a composite view of the specified product id
+    notes: |
+      # Normal response
+      If the requested product id is found the method will return information regarding:
+      1. Base product information
+      1. Reviews
+      1. Recommendations
+      1. Service Addresses\n(technical information regarding the addresses of the microservices that created the response)
+
+      # Expected partial and error responses
+      In the following cases, only a partial response be created (used to simplify testing of error conditions)
+
+      ## Product id 113
+      200 - Ok, but no recommendations will be returned
+
+      ## Product id 213
+      200 - Ok, but no reviews will be returned
+
+springdoc:
+  swagger-ui.path: /openapi/swagger-ui.html
+  api-docs.path: /openapi/v3/api-docs
+  packagesToScan: stylepatrick
+  pathsToMatch: /**

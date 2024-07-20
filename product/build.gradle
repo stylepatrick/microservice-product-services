@@ -6,6 +6,8 @@ plugins {
 
 description 'Product-Service'
 
+group = 'stylepatrick.product'
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)

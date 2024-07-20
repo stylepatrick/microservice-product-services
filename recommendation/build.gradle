@@ -6,6 +6,8 @@ plugins {
 
 description 'Recommendation-Service'
 
+group = 'stylepatrick.recommendation'
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)

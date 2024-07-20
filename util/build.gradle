@@ -1,8 +1,12 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version "$springBootVersion"
+    id 'org.springframework.boot' version "$springBootVersion" apply false
     id 'io.spring.dependency-management' version '1.1.5'
 }
+
+description 'Util'
+
+group = 'stylepatrick.util'
 
 java {
     toolchain {
@@ -14,9 +18,13 @@ repositories {
     mavenCentral()
 }
 
+dependencyManagement {
+    imports {
+        mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+    }
+}
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
