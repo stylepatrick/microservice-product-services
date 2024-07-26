@@ -1,14 +1,63 @@
 version: '3.9'
 
 services:
+  mongodb:
+    image: mongo:8.0.0-rc13
+    ports:
+      - "27017:27017"
+    command: mongod
+    volumes:
+      - microservice-mongo-data:/data/db
+    healthcheck:
+      test: [ "CMD","mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      timeout: 2s
+      retries: 60
+
+  mysql:
+    image: mysql:9.0.1
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpwd
+      MYSQL_DATABASE: review-db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pwd
+    volumes:
+      - microservice-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: "/usr/bin/mysql --user=user --password=pwd --execute \"SHOW DATABASES;\""
+      interval: 5s
+      timeout: 2s
+      retries: 60
+
   product:
     build: product
+    environment:
+      MONGO_PRODUCT_URL: mongodb
+      MONGO_PRODUCT_DATABASE: product-db
+    depends_on:
+      mongodb:
+        condition: service_healthy
 
   recommendation:
     build: recommendation
+    environment:
+      MONGO_RECOMMENDATION_URL: mongodb
+      MONGO_RECOMMENDATION_DATABASE: recommendation-db
+    depends_on:
+      mongodb:
+        condition: service_healthy
 
   review:
     build: review
+    environment:
+      MYSQL_REVIEW_URL: jdbc:mysql://mysql/review-db
+      MYSQL_REVIEW_USER: user
+      MYSQL_REVIEW_PWD: pwd
+    depends_on:
+      mysql:
+        condition: service_healthy
 
   composite-product:
     build: composite-product
@@ -18,3 +67,7 @@ services:
       APP_PRODUCT_SERVICE_URL: product:8080
       APP_RECOMMENDATION_SERVICE_URL: recommendation:8080
       APP_REVIEW_SERVICE_URL: review:8080
+
+volumes:
+  microservice-mongo-data:
+  microservice-mysql-data:

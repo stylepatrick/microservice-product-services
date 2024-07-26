@@ -4,3 +4,11 @@ server:
 spring:
   application:
     name: review
+
+# Strongly recommend to set this property to "none" in a production environment!
+spring.jpa.hibernate.ddl-auto: update
+
+spring.datasource:
+  url: ${MYSQL_REVIEW_URL}
+  username: ${MYSQL_REVIEW_USER}
+  password: ${MYSQL_REVIEW_PWD}

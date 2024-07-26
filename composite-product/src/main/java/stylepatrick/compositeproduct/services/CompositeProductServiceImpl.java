@@ -19,10 +19,28 @@ public class CompositeProductServiceImpl implements CompositeProductService {
     private final ServiceUtil serviceUtil;
 
     @Override
+    public void createProduct(ProductDto productDto) {
+        compositeProductServiceIntegration.createProduct(productDto.product());
+        if (!productDto.recommendations().isEmpty()) {
+            productDto.recommendations().forEach(compositeProductServiceIntegration::createRecommendation);
+        }
+        if (!productDto.reviews().isEmpty()) {
+            productDto.reviews().forEach(compositeProductServiceIntegration::createReview);
+        }
+    }
+
+    @Override
     public ProductDto getProduct(Integer productId) {
         Product product = compositeProductServiceIntegration.getProduct(productId);
         List<Recommendation> recommendations = compositeProductServiceIntegration.getRecommendations(productId);
         List<Review> reviews = compositeProductServiceIntegration.getReviews(productId);
         return new ProductDto(product, recommendations, reviews, serviceUtil.getServiceAddress());
+    }
+
+    @Override
+    public void deleteProduct(Integer productId) {
+        compositeProductServiceIntegration.deleteProduct(productId);
+        compositeProductServiceIntegration.deleteReviews(productId);
+        compositeProductServiceIntegration.deleteRecommendations(productId);
     }
 }

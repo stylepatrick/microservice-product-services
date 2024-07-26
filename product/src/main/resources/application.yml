@@ -4,3 +4,8 @@ server:
 spring:
   application:
     name: product
+
+spring.data.mongodb:
+  host: ${MONGO_PRODUCT_URL}
+  database: ${MONGO_PRODUCT_DATABASE}
+  auto-index-creation: true

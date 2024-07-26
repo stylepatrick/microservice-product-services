@@ -26,9 +26,28 @@ public class CompositeProductServiceIntegration implements ProductService, Recom
     }
 
     @Override
+    public Product createProduct(Product product) {
+        String url = buildUrl(compositeProductConfig.getProductServiceUrl() + "/product");
+        return restTemplate.postForEntity(url, product, Product.class).getBody();
+    }
+
+
+    @Override
     public Product getProduct(Integer productId) {
         String url = buildUrl(compositeProductConfig.getProductServiceUrl() + "/product/" + productId);
         return restTemplate.getForObject(url, Product.class);
+    }
+
+    @Override
+    public void deleteProduct(Integer productId) {
+        String url = buildUrl(compositeProductConfig.getProductServiceUrl() + "/product/" + productId);
+        restTemplate.delete(url);
+    }
+
+    @Override
+    public Recommendation createRecommendation(Recommendation body) {
+        String url = buildUrl(compositeProductConfig.getRecommendationServiceUrl() + "/recommendation");
+        return restTemplate.postForEntity(url, body, Recommendation.class).getBody();
     }
 
     @Override
@@ -36,8 +55,19 @@ public class CompositeProductServiceIntegration implements ProductService, Recom
         String url = buildUrl(compositeProductConfig.getRecommendationServiceUrl() + "/recommendation?productId=" + productId);
         return restTemplate
                 .exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<Recommendation>>() {
-                })
-                .getBody();
+                }).getBody();
+    }
+
+    @Override
+    public void deleteRecommendations(Integer productId) {
+        String url = buildUrl(compositeProductConfig.getRecommendationServiceUrl() + "/recommendation?productId=" + productId);
+        restTemplate.delete(url);
+    }
+
+    @Override
+    public Review createReview(Review body) {
+        String url = buildUrl(compositeProductConfig.getReviewServiceUrl() + "/review");
+        return restTemplate.postForEntity(url, body, Review.class).getBody();
     }
 
     @Override
@@ -45,9 +75,15 @@ public class CompositeProductServiceIntegration implements ProductService, Recom
         String url = buildUrl(compositeProductConfig.getReviewServiceUrl() + "/review?productId=" + productId);
         return restTemplate
                 .exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<Review>>() {
-                })
-                .getBody();
+                }).getBody();
     }
+
+    @Override
+    public void deleteReviews(Integer productId) {
+        String url = buildUrl(compositeProductConfig.getReviewServiceUrl() + "/review?productId=" + productId);
+        restTemplate.delete(url);
+    }
+
 
     private String buildUrl(String server) {
         return "http://" + server;

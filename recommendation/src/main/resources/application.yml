@@ -4,3 +4,8 @@ server:
 spring:
   application:
     name: recommendation
+
+spring.data.mongodb:
+  host: ${MONGO_RECOMMENDATION_URL}
+  database: ${MONGO_RECOMMENDATION_DATABASE}
+  auto-index-creation: true
