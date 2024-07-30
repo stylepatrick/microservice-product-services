@@ -52,6 +52,7 @@ api:
         This means that a delete request of a non-existing product will return **200 Ok**.
 
 
+springdoc:
   swagger-ui.path: /openapi/swagger-ui.html
   api-docs.path: /openapi/v3/api-docs
   packagesToScan: stylepatrick

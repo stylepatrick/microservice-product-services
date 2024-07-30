@@ -2,13 +2,13 @@ package stylepatrick.recommendation.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import stylepatrick.api.core.recommendation.Recommendation;
 import stylepatrick.api.core.recommendation.RecommendationService;
 import stylepatrick.recommendation.entity.RecommendationEntity;
 import stylepatrick.recommendation.repository.RecommendationRepository;
 import stylepatrick.util.services.ServiceUtil;
-
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -19,23 +19,26 @@ public class RecommendationServiceImpl implements RecommendationService {
     private final RecommendationMapper recommendationMapper;
 
     @Override
-    public Recommendation createRecommendation(Recommendation recommendation) {
+    public Mono<Recommendation> createRecommendation(Recommendation recommendation) {
         RecommendationEntity entity = recommendationMapper.apiToEntity(recommendation);
-        recommendationRepository.save(entity);
-        Recommendation api = recommendationMapper.entityToApi(entity);
-        return api;
+        return recommendationRepository.save(entity)
+                .map(recommendationMapper::entityToApi);
     }
 
     @Override
-    public List<Recommendation> getRecommendations(Integer productId) {
-        List<RecommendationEntity> entity = recommendationRepository.findByProductId(productId);
-        List<Recommendation> recommendations = recommendationMapper.entityListToApiList(entity);
-        recommendations.forEach(a -> a.setServiceAddress(serviceUtil.getServiceAddress()));
-        return recommendations;
+    public Flux<Recommendation> getRecommendations(Integer productId) {
+        return recommendationRepository.findByProductId(productId)
+                .map(e -> recommendationMapper.entityToApi(e))
+                .map(e -> setServiceAddress(e));
     }
 
     @Override
-    public void deleteRecommendations(Integer productId) {
-        recommendationRepository.deleteAll(recommendationRepository.findByProductId(productId));
+    public Mono<Void> deleteRecommendations(Integer productId) {
+        return recommendationRepository.deleteAll(recommendationRepository.findByProductId(productId));
+    }
+
+    private Recommendation setServiceAddress(Recommendation e) {
+        e.setServiceAddress(serviceUtil.getServiceAddress());
+        return e;
     }
 }

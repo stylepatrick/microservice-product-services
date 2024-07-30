@@ -2,6 +2,8 @@ package stylepatrick.review.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import stylepatrick.api.core.review.Review;
 import stylepatrick.api.core.review.ReviewService;
 import stylepatrick.review.entity.ReviewEntity;
@@ -19,7 +21,11 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewMapper reviewMapper;
 
     @Override
-    public Review createReview(Review review) {
+    public Mono<Review> createReview(Review review) {
+        return Mono.fromCallable(() -> internalCreateReview(review));
+    }
+
+    private Review internalCreateReview(Review review) {
         ReviewEntity entity = reviewMapper.apiToEntity(review);
         reviewRepository.save(entity);
         Review api = reviewMapper.entityToApi(entity);
@@ -28,15 +34,24 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<Review> getReviews(Integer productId) {
-        List<ReviewEntity> entity = reviewRepository.findByProductId(productId);
-        List<Review> reviews = reviewMapper.entityListToApiList(entity);
-        reviews.forEach(a -> a.setServiceAddress(serviceUtil.getServiceAddress()));
-        return reviews;
+    public Flux<Review> getReviews(Integer productId) {
+        return Mono.fromCallable(() -> internalGetReviews(productId))
+                .flatMapMany(Flux::fromIterable);
+    }
+
+    private List<Review> internalGetReviews(Integer productId) {
+        List<ReviewEntity> entityList = reviewRepository.findByProductId(productId);
+        List<Review> list = reviewMapper.entityListToApiList(entityList);
+        list.forEach(e -> e.setServiceAddress(serviceUtil.getServiceAddress()));
+        return list;
     }
 
     @Override
-    public void deleteReviews(Integer productId) {
+    public Mono<Void> deleteReviews(Integer productId) {
+        return Mono.fromRunnable(() -> internalDeleteReviews(productId));
+    }
+
+    private void internalDeleteReviews(Integer productId) {
         reviewRepository.deleteAll(reviewRepository.findByProductId(productId));
     }
 }

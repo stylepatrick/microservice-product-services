@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 @Tag(name = "ProductComposite", description = "REST API for composite product information.")
 public interface CompositeProductService {
@@ -17,7 +18,7 @@ public interface CompositeProductService {
     })
     @PostMapping(
             value = "/product-composite")
-    void createProduct(@RequestBody ProductDto productDto);
+    Mono<Void> createProduct(@RequestBody ProductDto productDto);
 
     @Operation(
             summary = "${api.product-composite.get.description}",
@@ -26,7 +27,7 @@ public interface CompositeProductService {
             @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok}")
     })
     @GetMapping(value = "/product-composite/{productId}")
-    ProductDto getProduct(@PathVariable Integer productId);
+    Mono<ProductDto> getProduct(@PathVariable Integer productId);
 
     @Operation(
             summary = "${api.product-composite.delete.description}",
@@ -35,5 +36,5 @@ public interface CompositeProductService {
             @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok}"),
     })
     @DeleteMapping(value = "/product-composite/{productId}")
-    void deleteProduct(@PathVariable Integer productId);
+    Mono<Void> deleteProduct(@PathVariable Integer productId);
 }

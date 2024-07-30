@@ -1,9 +1,11 @@
 package stylepatrick.compositeproduct.services;
 
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import stylepatrick.api.core.product.Product;
 import stylepatrick.api.core.product.ProductService;
 import stylepatrick.api.core.recommendation.Recommendation;
@@ -12,76 +14,79 @@ import stylepatrick.api.core.review.Review;
 import stylepatrick.api.core.review.ReviewService;
 import stylepatrick.compositeproduct.config.CompositeProductConfig;
 
-import java.util.List;
-
 @Service
 public class CompositeProductServiceIntegration implements ProductService, RecommendationService, ReviewService {
 
     private final CompositeProductConfig compositeProductConfig;
     private final RestTemplate restTemplate;
+    private final WebClient webClient;
 
-    public CompositeProductServiceIntegration(CompositeProductConfig compositeProductConfig) {
+    public CompositeProductServiceIntegration(
+            CompositeProductConfig compositeProductConfig,
+            WebClient.Builder webClient
+    ) {
         this.compositeProductConfig = compositeProductConfig;
+        this.webClient = webClient.build();
         this.restTemplate = new RestTemplate();
     }
 
     @Override
-    public Product createProduct(Product product) {
+    public Mono<Product> createProduct(Product product) {
         String url = buildUrl(compositeProductConfig.getProductServiceUrl() + "/product");
-        return restTemplate.postForEntity(url, product, Product.class).getBody();
+        return webClient.post()
+                .uri(url)
+                .body(BodyInserters.fromValue(product))
+                .retrieve()
+                .bodyToMono(Product.class);
     }
 
 
     @Override
-    public Product getProduct(Integer productId) {
+    public Mono<Product> getProduct(Integer productId) {
         String url = buildUrl(compositeProductConfig.getProductServiceUrl() + "/product/" + productId);
-        return restTemplate.getForObject(url, Product.class);
+        return webClient.get().uri(url).retrieve().bodyToMono(Product.class);
     }
 
     @Override
-    public void deleteProduct(Integer productId) {
+    public Mono<Void> deleteProduct(Integer productId) {
         String url = buildUrl(compositeProductConfig.getProductServiceUrl() + "/product/" + productId);
-        restTemplate.delete(url);
+        return webClient.delete().uri(url).retrieve().bodyToMono(Void.class);
     }
 
     @Override
-    public Recommendation createRecommendation(Recommendation body) {
+    public Mono<Recommendation> createRecommendation(Recommendation body) {
         String url = buildUrl(compositeProductConfig.getRecommendationServiceUrl() + "/recommendation");
-        return restTemplate.postForEntity(url, body, Recommendation.class).getBody();
+        return webClient.post().uri(url).body(BodyInserters.fromValue(body)).retrieve().bodyToMono(Recommendation.class);
     }
 
     @Override
-    public List<Recommendation> getRecommendations(Integer productId) {
+    public Flux<Recommendation> getRecommendations(Integer productId) {
         String url = buildUrl(compositeProductConfig.getRecommendationServiceUrl() + "/recommendation?productId=" + productId);
-        return restTemplate
-                .exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<Recommendation>>() {
-                }).getBody();
+        return webClient.get().uri(url).retrieve().bodyToFlux(Recommendation.class);
     }
 
     @Override
-    public void deleteRecommendations(Integer productId) {
+    public Mono<Void> deleteRecommendations(Integer productId) {
         String url = buildUrl(compositeProductConfig.getRecommendationServiceUrl() + "/recommendation?productId=" + productId);
-        restTemplate.delete(url);
+        return webClient.delete().uri(url).retrieve().bodyToMono(Void.class);
     }
 
     @Override
-    public Review createReview(Review body) {
+    public Mono<Review> createReview(Review body) {
         String url = buildUrl(compositeProductConfig.getReviewServiceUrl() + "/review");
-        return restTemplate.postForEntity(url, body, Review.class).getBody();
+        return webClient.post().uri(url).body(BodyInserters.fromValue(body)).retrieve().bodyToMono(Review.class);
     }
 
     @Override
-    public List<Review> getReviews(Integer productId) {
+    public Flux<Review> getReviews(Integer productId) {
         String url = buildUrl(compositeProductConfig.getReviewServiceUrl() + "/review?productId=" + productId);
-        return restTemplate
-                .exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<Review>>() {
-                }).getBody();
+        return webClient.get().uri(url).retrieve().bodyToFlux(Review.class);
     }
 
     @Override
-    public void deleteReviews(Integer productId) {
+    public Mono<Void> deleteReviews(Integer productId) {
         String url = buildUrl(compositeProductConfig.getReviewServiceUrl() + "/review?productId=" + productId);
-        restTemplate.delete(url);
+        return webClient.delete().uri(url).retrieve().bodyToMono(Void.class);
     }
 
 

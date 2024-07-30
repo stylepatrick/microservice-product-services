@@ -1,17 +1,17 @@
 package stylepatrick.api.core.review;
 
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface ReviewService {
 
     @PostMapping(value = "/review")
-    Review createReview(@RequestBody Review body);
+    Mono<Review> createReview(@RequestBody Review body);
 
     @GetMapping(value = "/review")
-    List<Review> getReviews(@RequestParam(value = "productId") Integer productId);
+    Flux<Review> getReviews(@RequestParam(value = "productId") Integer productId);
 
     @DeleteMapping(value = "/review")
-    void deleteReviews(@RequestParam(value = "productId") Integer productId);
+    Mono<Void> deleteReviews(@RequestParam(value = "productId") Integer productId);
 }

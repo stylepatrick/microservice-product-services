@@ -1,17 +1,17 @@
 package stylepatrick.api.core.recommendation;
 
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface RecommendationService {
 
     @PostMapping(value = "/recommendation")
-    Recommendation createRecommendation(@RequestBody Recommendation body);
+    Mono<Recommendation> createRecommendation(@RequestBody Recommendation body);
 
     @GetMapping(value = "/recommendation")
-    List<Recommendation> getRecommendations(@RequestParam(value = "productId") Integer productId);
+    Flux<Recommendation> getRecommendations(@RequestParam(value = "productId") Integer productId);
 
     @DeleteMapping(value = "/recommendation")
-    void deleteRecommendations(@RequestParam(value = "productId") Integer productId);
+    Mono<Void> deleteRecommendations(@RequestParam(value = "productId") Integer productId);
 }

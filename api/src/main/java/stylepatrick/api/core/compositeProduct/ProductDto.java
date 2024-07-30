@@ -7,5 +7,5 @@ import stylepatrick.api.core.review.Review;
 import java.util.List;
 
 public record ProductDto(Product product, List<Recommendation> recommendations, List<Review> reviews,
-                         String serviceAddress) {
+                         ServiceAddresses serviceAddresses) {
 }

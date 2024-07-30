@@ -2,6 +2,7 @@ package stylepatrick.product.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 import stylepatrick.api.core.product.Product;
 import stylepatrick.api.core.product.ProductService;
 import stylepatrick.product.entity.ProductEntity;
@@ -19,24 +20,28 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
 
     @Override
-    public Product createProduct(Product product) {
+    public Mono<Product> createProduct(Product product) {
         ProductEntity entity = productMapper.apiToEntity(product);
-        productRepository.save(entity);
-        Product api = productMapper.entityToApi(entity);
+        return productRepository.save(entity)
+                .map(productMapper::entityToApi);
+    }
+
+    @Override
+    public Mono<Product> getProduct(Integer productId) {
+        Mono<Product> api = productRepository.findByProductId(productId)
+                .switchIfEmpty(Mono.error(new NoSuchElementException()))
+                .map(productMapper::entityToApi)
+                .map(e -> {
+                    e.setServiceAddress(serviceUtil.getServiceAddress());
+                    return e;
+                });
         return api;
     }
 
     @Override
-    public Product getProduct(Integer productId) {
-        ProductEntity entity = productRepository.findByProductId(productId).orElseThrow(NoSuchElementException::new);
-        Product api = productMapper.entityToApi(entity);
-        api.setServiceAddress(serviceUtil.getServiceAddress());
-        return api;
-    }
-
-    @Override
-    public void deleteProduct(Integer productId) {
-        productRepository.findByProductId(productId)
-                .ifPresent(x -> productRepository.deleteById(x.getId()));
+    public Mono<Void> deleteProduct(Integer productId) {
+        return productRepository.findByProductId(productId)
+                .map(e -> productRepository.deleteById(e.getId()))
+                .flatMap(e -> e);
     }
 }
