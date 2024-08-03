@@ -2,3 +2,7 @@ app:
   productServiceUrl: localhost:8081
   recommendationServiceUrl: localhost:8082
   reviewServiceUrl: localhost:8083
+
+spring.cloud.stream.kafka.binder:
+  brokers: 127.0.0.1
+  defaultBrokerPort: 9092

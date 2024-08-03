@@ -57,3 +57,23 @@ springdoc:
   api-docs.path: /openapi/v3/api-docs
   packagesToScan: stylepatrick
   pathsToMatch: /**
+
+spring.cloud.stream:
+  defaultBinder: kafka
+  bindings:
+    products-out-0:
+      destination: products
+      producer:
+        required-groups: auditGroup
+    recommendations-out-0:
+      destination: recommendations
+      producer:
+        required-groups: auditGroup
+    reviews-out-0:
+      destination: reviews
+      producer:
+        required-groups: auditGroup
+
+spring.cloud.stream.kafka.binder:
+  brokers: ${APP_KAFKA_BROKER}
+  defaultBrokerPort: ${APP_KAFKA_PORT}
