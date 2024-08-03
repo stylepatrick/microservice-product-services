@@ -77,3 +77,6 @@ spring.cloud.stream:
 spring.cloud.stream.kafka.binder:
   brokers: ${APP_KAFKA_BROKER}
   defaultBrokerPort: ${APP_KAFKA_PORT}
+
+management.endpoint.health.show-details: "ALWAYS"
+management.endpoints.web.exposure.include: "health"

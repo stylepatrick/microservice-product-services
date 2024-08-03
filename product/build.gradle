@@ -27,6 +27,7 @@ dependencies {
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     compileOnly 'org.projectlombok:lombok'
     compileOnly "org.mapstruct:mapstruct-processor:${mapstructVersion}"

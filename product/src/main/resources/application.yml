@@ -30,3 +30,6 @@ spring.cloud.stream.bindings.messageProcessor-in-0.consumer:
   backOffInitialInterval: 500
   backOffMaxInterval: 1000
   backOffMultiplier: 2.0
+
+management.endpoint.health.show-details: "ALWAYS"
+management.endpoints.web.exposure.include: "health"
