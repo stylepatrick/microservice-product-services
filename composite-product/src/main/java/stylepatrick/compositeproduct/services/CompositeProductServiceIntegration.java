@@ -28,11 +28,11 @@ public class CompositeProductServiceIntegration implements ProductService, Recom
 
     public CompositeProductServiceIntegration(
             CompositeProductConfig compositeProductConfig,
-            WebClient.Builder webClient,
+            WebClient.Builder webClientBuilder,
             StreamBridge streamBridge
     ) {
         this.compositeProductConfig = compositeProductConfig;
-        this.webClient = webClient.build();
+        this.webClient = webClientBuilder.build();
         this.streamBridge = streamBridge;
     }
 

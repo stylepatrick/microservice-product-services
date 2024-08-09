@@ -5,10 +5,11 @@ spring:
   application:
     name: composite-product
 
-app:
-  productServiceUrl: ${APP_PRODUCT_SERVICE_URL}
-  recommendationServiceUrl: ${APP_RECOMMENDATION_SERVICE_URL}
-  reviewServiceUrl: ${APP_REVIEW_SERVICE_URL}
+# Only required without Eureka-Server
+#app:
+#  productServiceUrl: ${APP_PRODUCT_SERVICE_URL}
+#  recommendationServiceUrl: ${APP_RECOMMENDATION_SERVICE_URL}
+#  reviewServiceUrl: ${APP_REVIEW_SERVICE_URL}
 
 api:
   common:
@@ -80,3 +81,8 @@ spring.cloud.stream.kafka.binder:
 
 management.endpoint.health.show-details: "ALWAYS"
 management.endpoints.web.exposure.include: "health"
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${APP_EUREKA_SERVER}:8761/eureka/

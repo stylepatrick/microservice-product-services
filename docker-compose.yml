@@ -56,6 +56,11 @@ services:
       zookeeper:
         condition: service_started
 
+  eureka-server:
+    build: spring-cloud/eureka-server
+    ports:
+      - "8761:8761"
+
   product:
     build: product
     environment:
@@ -63,6 +68,7 @@ services:
       MONGO_PRODUCT_DATABASE: product-db
       KAFKA_PRODUCT_BROKER: kafka
       KAFKA_PRODUCT_PORT: 9092
+      APP_EUREKA_SERVER: eureka-server
     depends_on:
       mongodb:
         condition: service_healthy
@@ -76,6 +82,7 @@ services:
       MONGO_RECOMMENDATION_DATABASE: recommendation-db
       KAFKA_RECOMMENDATION_BROKER: kafka
       KAFKA_RECOMMENDATION_PORT: 9092
+      APP_EUREKA_SERVER: eureka-server
     depends_on:
       mongodb:
         condition: service_healthy
@@ -90,6 +97,7 @@ services:
       MYSQL_REVIEW_PWD: pwd
       KAFKA_REVIEW_BROKER: kafka
       KAFKA_REVIEW_PORT: 9092
+      APP_EUREKA_SERVER: eureka-server
     depends_on:
       mysql:
         condition: service_healthy
@@ -101,11 +109,13 @@ services:
     ports:
       - "8080:8080"
     environment:
-      APP_PRODUCT_SERVICE_URL: product:8080
-      APP_RECOMMENDATION_SERVICE_URL: recommendation:8080
-      APP_REVIEW_SERVICE_URL: review:8080
+      # Only needed without Eureka-Server
+      #APP_PRODUCT_SERVICE_URL: product
+      #APP_RECOMMENDATION_SERVICE_URL: recommendation
+      #APP_REVIEW_SERVICE_URL: review
       APP_KAFKA_BROKER: kafka
       APP_KAFKA_PORT: 9092
+      APP_EUREKA_SERVER: eureka-server
     depends_on:
       kafka:
         condition: service_started

@@ -36,3 +36,8 @@ spring.cloud.stream.bindings.messageProcessor-in-0.consumer:
 
 management.endpoint.health.show-details: "ALWAYS"
 management.endpoints.web.exposure.include: "health"
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${APP_EUREKA_SERVER}:8761/eureka/
