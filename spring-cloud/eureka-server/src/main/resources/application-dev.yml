@@ -15,5 +15,5 @@ eureka:
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
 app:
-  username: ${APP_EUREKA_USERNAME}
-  password: ${APP_EUREKA_PASSWORD}
+  username: u
+  password: p

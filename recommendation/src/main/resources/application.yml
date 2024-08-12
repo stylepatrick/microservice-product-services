@@ -37,4 +37,4 @@ management.endpoints.web.exposure.include: "health"
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://${APP_EUREKA_SERVER}:8761/eureka/
+      defaultZone: http://${APP_EUREKA_USERNAME}:${APP_EUREKA_PASSWORD}@${APP_EUREKA_SERVER}:8761/eureka/

@@ -14,7 +14,7 @@ import stylepatrick.api.core.recommendation.Recommendation;
 import stylepatrick.api.core.recommendation.RecommendationService;
 import stylepatrick.api.core.review.Review;
 import stylepatrick.api.core.review.ReviewService;
-import stylepatrick.compositeproduct.config.CompositeProductConfig;
+import stylepatrick.util.services.CompositeProductConfig;
 
 import static stylepatrick.api.core.event.Event.Type.CREATE;
 import static stylepatrick.api.core.event.Event.Type.DELETE;

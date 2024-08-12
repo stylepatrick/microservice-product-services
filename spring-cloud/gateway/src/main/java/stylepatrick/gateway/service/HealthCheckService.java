@@ -1,10 +1,10 @@
-package stylepatrick.compositeproduct.services;
+package stylepatrick.gateway.service;
 
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import stylepatrick.compositeproduct.config.CompositeProductConfig;
+import stylepatrick.util.services.CompositeProductConfig;
 
 @Service
 public class HealthCheckService {
@@ -29,6 +29,10 @@ public class HealthCheckService {
 
     public Mono<Health> getReviewHealth() {
         return getHealth(compositeProductConfig.getReviewServiceUrl());
+    }
+
+    public Mono<Health> getCompositeProductHealth() {
+        return getHealth(compositeProductConfig.getCompositeProductUrl());
     }
 
 

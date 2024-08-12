@@ -3,8 +3,13 @@ version: '3.9'
 services:
   mongodb:
     image: mongo:8.0.0-rc13
+    container_name: mps-mongodb
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     ports:
-      - "27017:27017"
+      - 27017:27017
     command: mongod
     volumes:
       - microservice-mongo-data:/data/db
@@ -16,8 +21,13 @@ services:
 
   mysql:
     image: mysql:9.0.1
+    container_name: mps-mysql
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     ports:
-      - "3306:3306"
+      - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: rootpwd
       MYSQL_DATABASE: review-db
@@ -33,6 +43,11 @@ services:
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.7.0
+    container_name: mps-zookeeper
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -41,14 +56,19 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:7.7.0
+    container_name: mps-kafka
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     ports:
       - 9092:9092
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      #KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       # Required if services are started in Debug mode
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092
+      # KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -58,17 +78,44 @@ services:
 
   eureka-server:
     build: spring-cloud/eureka-server
+    container_name: mps-eureka-server
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    environment:
+      APP_EUREKA_USERNAME: u
+      APP_EUREKA_PASSWORD: p
+
+  gateway:
+    build: spring-cloud/gateway
+    container_name: mps-gateway
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    environment:
+      APP_EUREKA_SERVER: eureka-server
+      APP_EUREKA_USERNAME: u
+      APP_EUREKA_PASSWORD: p
     ports:
-      - "8761:8761"
+      - 8080:8080
 
   product:
     build: product
+    container_name: mps-product
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     environment:
       MONGO_PRODUCT_URL: mongodb
       MONGO_PRODUCT_DATABASE: product-db
       KAFKA_PRODUCT_BROKER: kafka
       KAFKA_PRODUCT_PORT: 9092
       APP_EUREKA_SERVER: eureka-server
+      APP_EUREKA_USERNAME: u
+      APP_EUREKA_PASSWORD: p
     depends_on:
       mongodb:
         condition: service_healthy
@@ -77,12 +124,19 @@ services:
 
   recommendation:
     build: recommendation
+    container_name: mps-recommendation
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     environment:
       MONGO_RECOMMENDATION_URL: mongodb
       MONGO_RECOMMENDATION_DATABASE: recommendation-db
       KAFKA_RECOMMENDATION_BROKER: kafka
       KAFKA_RECOMMENDATION_PORT: 9092
       APP_EUREKA_SERVER: eureka-server
+      APP_EUREKA_USERNAME: u
+      APP_EUREKA_PASSWORD: p
     depends_on:
       mongodb:
         condition: service_healthy
@@ -91,6 +145,11 @@ services:
 
   review:
     build: review
+    container_name: mps-review
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     environment:
       MYSQL_REVIEW_URL: jdbc:mysql://mysql/review-db
       MYSQL_REVIEW_USER: user
@@ -98,6 +157,8 @@ services:
       KAFKA_REVIEW_BROKER: kafka
       KAFKA_REVIEW_PORT: 9092
       APP_EUREKA_SERVER: eureka-server
+      APP_EUREKA_USERNAME: u
+      APP_EUREKA_PASSWORD: p
     depends_on:
       mysql:
         condition: service_healthy
@@ -106,8 +167,11 @@ services:
 
   composite-product:
     build: composite-product
-    ports:
-      - "8080:8080"
+    container_name: mps-composite-product
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     environment:
       # Only needed without Eureka-Server
       #APP_PRODUCT_SERVICE_URL: product
@@ -116,6 +180,8 @@ services:
       APP_KAFKA_BROKER: kafka
       APP_KAFKA_PORT: 9092
       APP_EUREKA_SERVER: eureka-server
+      APP_EUREKA_USERNAME: u
+      APP_EUREKA_PASSWORD: p
     depends_on:
       kafka:
         condition: service_started

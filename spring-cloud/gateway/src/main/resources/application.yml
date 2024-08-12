@@ -1,0 +1,46 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway
+
+spring.cloud.gateway.routes:
+
+  - id: composite-product
+    uri: lb://composite-product
+    predicates:
+      - Path=/product-composite/**
+
+  - id: composite-product-swagger-ui
+    uri: lb://composite-product
+    predicates:
+      - Path=/openapi/**
+
+  - id: eureka-api
+    uri: http://${APP_EUREKA_SERVER}:8761
+    predicates:
+      - Path=/eureka/api/{segment}
+    filters:
+      - SetPath=/eureka/{segment}
+
+  - id: eureka-web-start
+    uri: http://${APP_EUREKA_SERVER}:8761
+    predicates:
+      - Path=/eureka/web
+    filters:
+      - SetPath=/
+
+  - id: eureka-web-other
+    uri: http://${APP_EUREKA_SERVER}:8761
+    predicates:
+      - Path=/eureka/**
+
+
+management.endpoint.health.show-details: "ALWAYS"
+management.endpoints.web.exposure.include: "health"
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${APP_EUREKA_USERNAME}:${APP_EUREKA_PASSWORD}@${APP_EUREKA_SERVER}:8761/eureka/
