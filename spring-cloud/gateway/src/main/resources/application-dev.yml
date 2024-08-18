@@ -34,3 +34,6 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://u:p@localhost:8761/eureka/
+
+
+spring.security.oauth2.resourceserver.jwt.issuer-uri: http://localhost:8989/auth/realms/mps

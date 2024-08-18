@@ -66,15 +66,54 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      # Required if services are started in Debug mode
-      # KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092
+      #KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      #Required if services are started in Debug mode
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     depends_on:
       zookeeper:
         condition: service_started
+
+  keycloak-postgres:
+    container_name: mps-keycloak-postgres
+    restart: always
+    image: postgres:13.16
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+      PGDATA: /var/lib/postgresql/data/keycloak-pg-data
+    deploy:
+      resources:
+        limits:
+          memory: 2048M
+    volumes:
+      - keycloak-pg-data:/var/lib/postgresql/data/keycloak-pg-data
+
+  keycloak:
+    container_name: mps-keycloak
+    restart: always
+    image: quay.io/keycloak/keycloak:25.0.2
+    environment:
+      KC_DB: postgres
+      KC_DB_URL_HOST: keycloak-postgres
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak
+      KC_HTTP_RELATIVE_PATH: /auth
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: ["start-dev"]
+    deploy:
+      resources:
+        limits:
+          memory: 2024M
+    ports:
+      - 8989:8080
+    depends_on:
+      - keycloak-postgres
 
   eureka-server:
     build: spring-cloud/eureka-server
@@ -98,6 +137,8 @@ services:
       APP_EUREKA_SERVER: eureka-server
       APP_EUREKA_USERNAME: u
       APP_EUREKA_PASSWORD: p
+      APP_KEYCLOAK_SERVER: keycloak
+      APP_KEYCLOAK_REALM: mps
     ports:
       - 8080:8080
 
@@ -182,6 +223,8 @@ services:
       APP_EUREKA_SERVER: eureka-server
       APP_EUREKA_USERNAME: u
       APP_EUREKA_PASSWORD: p
+      APP_KEYCLOAK_SERVER: http://localdhost:8989/auth
+      APP_KEYCLOAK_REALM: mps
     depends_on:
       kafka:
         condition: service_started
@@ -189,3 +232,4 @@ services:
 volumes:
   microservice-mongo-data:
   microservice-mysql-data:
+  keycloak-pg-data:

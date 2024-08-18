@@ -1,4 +1,4 @@
-package stylepatrick.eurekaserver;
+package stylepatrick.eurekaserver.config;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -9,11 +9,10 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import stylepatrick.eurekaserver.config.EurekaConfig;
 
 @Configuration
 @AllArgsConstructor
-public class WebSecurityConfig {
+public class SecurityConfig {
 
     private final EurekaConfig eurekaConfig;
 

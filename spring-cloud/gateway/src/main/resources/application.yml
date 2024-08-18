@@ -44,3 +44,5 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://${APP_EUREKA_USERNAME}:${APP_EUREKA_PASSWORD}@${APP_EUREKA_SERVER}:8761/eureka/
+
+spring.security.oauth2.resourceserver.jwt.issuer-uri: http://${APP_KEYCLOAK_SERVER}/auth/realms/${APP_KEYCLOAK_REALM}
