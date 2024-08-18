@@ -84,6 +84,24 @@
         "clientRole": false,
         "containerId": "5cf612db-687e-48c0-97a5-b7186db8da67",
         "attributes": {}
+      },
+      {
+        "id": "7e983892-5c61-4737-8315-9253cfc8b17c",
+        "name": "write",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "5cf612db-687e-48c0-97a5-b7186db8da67",
+        "attributes": {}
+      },
+      {
+        "id": "3fbeb5c6-dcb8-473b-8c76-944415cb7bdd",
+        "name": "read",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "5cf612db-687e-48c0-97a5-b7186db8da67",
+        "attributes": {}
       }
     ],
     "client": {
