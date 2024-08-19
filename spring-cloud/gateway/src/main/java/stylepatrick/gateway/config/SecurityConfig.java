@@ -21,6 +21,8 @@ public class SecurityConfig {
                         // For Swagger UI
                         .pathMatchers("/openapi/**").permitAll()
                         .pathMatchers("/webjars/**").permitAll()
+                        // To Access Configs from external, should be disabled in production
+                        .pathMatchers("/config/**").permitAll()
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2

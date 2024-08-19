@@ -1,40 +1,15 @@
-server:
-  port: 8080
+spring.config.import: "configserver:"
 
 spring:
-  application:
-    name: recommendation
-
-spring.data.mongodb:
-  host: ${MONGO_RECOMMENDATION_URL}
-  database: ${MONGO_RECOMMENDATION_DATABASE}
-  auto-index-creation: true
-
-spring.cloud.function.definition: messageProcessor
-
-spring.cloud.stream:
-  defaultBinder: kafka
-  bindings.messageProcessor-in-0:
-    destination: recommendations
-    group: recommendationsGroup
-
-spring.cloud.stream.kafka.binder:
-  brokers: ${KAFKA_RECOMMENDATION_BROKER}
-  defaultBrokerPort: ${KAFKA_RECOMMENDATION_PORT}
-
-spring.cloud.stream.kafka.bindings.messageProcessor-in-0.consumer:
-  enableDlq: true
-
-spring.cloud.stream.bindings.messageProcessor-in-0.consumer:
-  maxAttempts: 3
-  backOffInitialInterval: 500
-  backOffMaxInterval: 1000
-  backOffMultiplier: 2.0
-
-management.endpoint.health.show-details: "ALWAYS"
-management.endpoints.web.exposure.include: "health"
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://${APP_EUREKA_USERNAME}:${APP_EUREKA_PASSWORD}@${APP_EUREKA_SERVER}:8761/eureka/
+  application.name: recommendation
+  cloud.config:
+    failFast: true
+    retry:
+      initialInterval: 3000
+      multiplier: 1.3
+      maxInterval: 10000
+      maxAttempts: 20
+    # URI localhost added for development
+    uri: http://config-server:8888,http://localhost:8888
+    username: u
+    password: p

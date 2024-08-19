@@ -3,7 +3,6 @@ version: '3.9'
 services:
   mongodb:
     image: mongo:8.0.0-rc13
-    container_name: mps-mongodb
     deploy:
       resources:
         limits:
@@ -21,7 +20,6 @@ services:
 
   mysql:
     image: mysql:9.0.1
-    container_name: mps-mysql
     deploy:
       resources:
         limits:
@@ -43,7 +41,6 @@ services:
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.7.0
-    container_name: mps-zookeeper
     deploy:
       resources:
         limits:
@@ -56,7 +53,6 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:7.7.0
-    container_name: mps-kafka
     deploy:
       resources:
         limits:
@@ -66,9 +62,9 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      #KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       #Required if services are started in Debug mode
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092
+      #KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -77,7 +73,6 @@ services:
         condition: service_started
 
   keycloak-postgres:
-    container_name: mps-keycloak-postgres
     restart: always
     image: postgres:13.16
     environment:
@@ -93,7 +88,6 @@ services:
       - keycloak-pg-data:/var/lib/postgresql/data/keycloak-pg-data
 
   keycloak:
-    container_name: mps-keycloak
     restart: always
     image: quay.io/keycloak/keycloak:25.0.2
     environment:
@@ -105,7 +99,7 @@ services:
       KC_HTTP_RELATIVE_PATH: /auth
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-    command: ["start-dev"]
+    command: [ "start-dev" ]
     deploy:
       resources:
         limits:
@@ -117,7 +111,6 @@ services:
 
   eureka-server:
     build: spring-cloud/eureka-server
-    container_name: mps-eureka-server
     deploy:
       resources:
         limits:
@@ -126,9 +119,22 @@ services:
       APP_EUREKA_USERNAME: u
       APP_EUREKA_PASSWORD: p
 
+  config-server:
+    build: spring-cloud/config-server
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    environment:
+      SPRING_PROFILES_ACTIVE: native
+      ENCRYPT_KEY: my-secret-key
+      APP_CONFIG_SERVER_USERNAME: u
+      APP_CONFIG_SERVER_PASSWORD: p
+    volumes:
+      - C:\Users\patrick.oberkofler\Documents\GitHub\microservice-product-services\config-repo:/config-repo
+
   gateway:
     build: spring-cloud/gateway
-    container_name: mps-gateway
     deploy:
       resources:
         limits:
@@ -137,14 +143,17 @@ services:
       APP_EUREKA_SERVER: eureka-server
       APP_EUREKA_USERNAME: u
       APP_EUREKA_PASSWORD: p
-      APP_KEYCLOAK_SERVER: keycloak
+      APP_KEYCLOAK_SERVER: host.docker.internal:8989
       APP_KEYCLOAK_REALM: mps
+      APP_CONFIG_SERVER_SERVER: config-server
     ports:
       - 8080:8080
+    depends_on:
+      config-server:
+        condition: service_started
 
   product:
     build: product
-    container_name: mps-product
     deploy:
       resources:
         limits:
@@ -152,8 +161,8 @@ services:
     environment:
       MONGO_PRODUCT_URL: mongodb
       MONGO_PRODUCT_DATABASE: product-db
-      KAFKA_PRODUCT_BROKER: kafka
-      KAFKA_PRODUCT_PORT: 9092
+      KAFKA_BROKER: kafka
+      KAFKA_PORT: 9092
       APP_EUREKA_SERVER: eureka-server
       APP_EUREKA_USERNAME: u
       APP_EUREKA_PASSWORD: p
@@ -162,10 +171,11 @@ services:
         condition: service_healthy
       kafka:
         condition: service_started
+      config-server:
+        condition: service_started
 
   recommendation:
     build: recommendation
-    container_name: mps-recommendation
     deploy:
       resources:
         limits:
@@ -173,8 +183,8 @@ services:
     environment:
       MONGO_RECOMMENDATION_URL: mongodb
       MONGO_RECOMMENDATION_DATABASE: recommendation-db
-      KAFKA_RECOMMENDATION_BROKER: kafka
-      KAFKA_RECOMMENDATION_PORT: 9092
+      KAFKA_BROKER: kafka
+      KAFKA_PORT: 9092
       APP_EUREKA_SERVER: eureka-server
       APP_EUREKA_USERNAME: u
       APP_EUREKA_PASSWORD: p
@@ -183,10 +193,11 @@ services:
         condition: service_healthy
       kafka:
         condition: service_started
+      config-server:
+        condition: service_started
 
   review:
     build: review
-    container_name: mps-review
     deploy:
       resources:
         limits:
@@ -195,8 +206,8 @@ services:
       MYSQL_REVIEW_URL: jdbc:mysql://mysql/review-db
       MYSQL_REVIEW_USER: user
       MYSQL_REVIEW_PWD: pwd
-      KAFKA_REVIEW_BROKER: kafka
-      KAFKA_REVIEW_PORT: 9092
+      KAFKA_BROKER: kafka
+      KAFKA_PORT: 9092
       APP_EUREKA_SERVER: eureka-server
       APP_EUREKA_USERNAME: u
       APP_EUREKA_PASSWORD: p
@@ -205,10 +216,11 @@ services:
         condition: service_healthy
       kafka:
         condition: service_started
+      config-server:
+        condition: service_started
 
   composite-product:
     build: composite-product
-    container_name: mps-composite-product
     deploy:
       resources:
         limits:
@@ -218,15 +230,17 @@ services:
       #APP_PRODUCT_SERVICE_URL: product
       #APP_RECOMMENDATION_SERVICE_URL: recommendation
       #APP_REVIEW_SERVICE_URL: review
-      APP_KAFKA_BROKER: kafka
-      APP_KAFKA_PORT: 9092
+      KAFKA_BROKER: kafka
+      KAFKA_PORT: 9092
       APP_EUREKA_SERVER: eureka-server
       APP_EUREKA_USERNAME: u
       APP_EUREKA_PASSWORD: p
-      APP_KEYCLOAK_SERVER: http://localdhost:8989/auth
+      APP_KEYCLOAK_SERVER: host.docker.internal:8989
       APP_KEYCLOAK_REALM: mps
     depends_on:
       kafka:
+        condition: service_started
+      config-server:
         condition: service_started
 
 volumes:

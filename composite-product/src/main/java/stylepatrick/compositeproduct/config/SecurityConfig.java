@@ -5,18 +5,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
-import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import reactor.core.publisher.Mono;
 import stylepatrick.compositeproduct.UserRole;
@@ -56,12 +51,12 @@ public class SecurityConfig {
                         .pathMatchers("/openapi/**").permitAll()
                         .pathMatchers("/webjars/**").permitAll()
                         .pathMatchers("/actuator/**").permitAll()
-                        .pathMatchers(HttpMethod.DELETE ,"/product-composite/**")
-                            .hasAnyAuthority(UserRole.WRITE.getValue())
-                        .pathMatchers(HttpMethod.POST ,"/product-composite/**")
-                            .hasAnyAuthority(UserRole.WRITE.getValue())
-                        .pathMatchers(HttpMethod.GET ,"/product-composite/**")
-                            .hasAnyAuthority(UserRole.READ.getValue(), UserRole.WRITE.getValue())
+                        .pathMatchers(HttpMethod.DELETE, "/product-composite/**")
+                        .hasAnyAuthority(UserRole.WRITE.getValue())
+                        .pathMatchers(HttpMethod.POST, "/product-composite/**")
+                        .hasAnyAuthority(UserRole.WRITE.getValue())
+                        .pathMatchers(HttpMethod.GET, "/product-composite/**")
+                        .hasAnyAuthority(UserRole.READ.getValue(), UserRole.WRITE.getValue())
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer ->
