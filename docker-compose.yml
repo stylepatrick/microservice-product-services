@@ -62,9 +62,9 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      #KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       #Required if services are started in Debug mode
-      #KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -130,6 +130,9 @@ services:
       ENCRYPT_KEY: my-secret-key
       APP_CONFIG_SERVER_USERNAME: u
       APP_CONFIG_SERVER_PASSWORD: p
+      APP_EUREKA_SERVER: eureka-server
+      APP_EUREKA_USERNAME: u
+      APP_EUREKA_PASSWORD: p
     volumes:
       - C:\Users\patrick.oberkofler\Documents\GitHub\microservice-product-services\config-repo:/config-repo
 

@@ -35,6 +35,11 @@ public class HealthCheckService {
         return getHealth(compositeProductConfig.getCompositeProductUrl());
     }
 
+    public Mono<Health> getConfigServerHealth() {
+        return getHealth(compositeProductConfig.getConfigServerUrl());
+    }
+
+
 
     private Mono<Health> getHealth(String url) {
         String fullUrl = buildUrl(url + "/actuator/health");

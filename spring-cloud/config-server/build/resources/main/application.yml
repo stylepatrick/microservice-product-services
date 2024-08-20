@@ -12,3 +12,8 @@ management.endpoints.web.exposure.include: "health"
 app:
   username: ${APP_CONFIG_SERVER_USERNAME}
   password: ${APP_CONFIG_SERVER_PASSWORD}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${APP_EUREKA_USERNAME}:${APP_EUREKA_PASSWORD}@${APP_EUREKA_SERVER}:8761/eureka/

@@ -1,7 +1,12 @@
 package stylepatrick.compositeproduct.services;
 
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import stylepatrick.api.core.compositeProduct.CompositeProductService;
 import stylepatrick.api.core.compositeProduct.ProductDto;
@@ -33,6 +38,9 @@ public class CompositeProductServiceImpl implements CompositeProductService {
     }
 
     @Override
+    @Retry(name = "productDto")
+    @TimeLimiter(name = "productDto")
+    @CircuitBreaker(name = "productDto", fallbackMethod = "getProductDtoFallbackValue")
     public Mono<ProductDto> getProduct(Integer productId) {
         return Mono.zip(
                 values -> createProductDto((Product) values[0], (List<Recommendation>) values[1], (List<Review>) values[2], serviceUtil.getServiceAddress()),
@@ -57,5 +65,22 @@ public class CompositeProductServiceImpl implements CompositeProductService {
         compositeProductServiceIntegration.deleteReviews(productId).subscribe();
         compositeProductServiceIntegration.deleteRecommendations(productId).subscribe();
         return Mono.empty();
+    }
+
+    private Mono<ProductDto> getProductDtoFallbackValue(Integer productId, CallNotPermittedException ex) {
+        Product p = new Product(productId, "Fallback product" + productId, productId, "Fallback");
+        List<Recommendation> r = List.of(new Recommendation(productId, 0, "Fallback Recommendation", "", 0, "Fallback"));
+        List<Review> w = List.of(new Review(productId, 0, "Fallback Review", "", "", "Fallback"));
+        return Mono.just(new ProductDto(p, r, w, new ServiceAddresses("Fallback", "Fallback", "Fallback", "Fallback")));
+    }
+
+    private Flux<Recommendation> getRecommendationFallbackValue(Integer productId, CallNotPermittedException ex) {
+        // Fallback Logic - We could load data from Cache
+        return Flux.just();
+    }
+
+    private Flux<Review> getReviewFallbackValue(Integer productId, CallNotPermittedException ex) {
+        // Fallback Logic - We could load data from Cache
+        return Flux.just();
     }
 }

@@ -82,3 +82,30 @@ spring.cloud.stream:
       destination: reviews
       producer:
         required-groups: auditGroup
+
+resilience4j.timelimiter:
+  instances:
+    productDto:
+      timeoutDuration: 2s
+
+resilience4j.retry:
+  instances:
+    productDto:
+      maxAttempts: 3
+      waitDuration: 1000
+
+management.health.circuitbreakers.enabled: true
+
+# CircuitBreak checks the last 5 events, if 50% of them fails it will be set to open, after that it waits 10s in open state until it changes to half-open
+# After 3 events are successfully it will get back to closed.
+resilience4j.circuitbreaker:
+  instances:
+    productDto:
+      allowHealthIndicatorToFail: false
+      registerHealthIndicator: true
+      slidingWindowType: COUNT_BASED
+      slidingWindowSize: 5
+      failureRateThreshold: 50
+      waitDurationInOpenState: 10000
+      permittedNumberOfCallsInHalfOpenState: 3
+      automaticTransitionFromOpenToHalfOpenEnabled: true

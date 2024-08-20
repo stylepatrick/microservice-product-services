@@ -15,4 +15,5 @@ public class CompositeProductConfig {
     private String recommendationServiceUrl = "recommendation";
     private String reviewServiceUrl = "review";
     private String compositeProductUrl = "composite-product";
+    private String configServerUrl = "config-server";
 }

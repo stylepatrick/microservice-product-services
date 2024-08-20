@@ -26,6 +26,7 @@ public class HealthCheck {
         registry.put("recommendation", healthCheckService::getRecommendationHealth);
         registry.put("review", healthCheckService::getReviewHealth);
         registry.put("composite-product", healthCheckService::getCompositeProductHealth);
+        registry.put("config-server", healthCheckService::getConfigServerHealth);
 
         return CompositeReactiveHealthContributor.fromMap(registry);
     }

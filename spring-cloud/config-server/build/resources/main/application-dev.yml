@@ -3,3 +3,8 @@ spring.cloud.config.server.native.searchLocations: C:\Users\patrick.oberkofler\D
 app:
   username: u
   password: p
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://u:p@localhost:8761/eureka/

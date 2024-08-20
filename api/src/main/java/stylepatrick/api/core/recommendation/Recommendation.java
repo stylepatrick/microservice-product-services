@@ -9,6 +9,18 @@ public class Recommendation {
     private String content;
     private String serviceAddress;
 
+    public Recommendation(int productId, int recommendationId,  String author, String content, int rate, String serviceAddress) {
+        this.productId = productId;
+        this.recommendationId = recommendationId;
+        this.content = content;
+        this.rate = rate;
+        this.author = author;
+        this.serviceAddress = serviceAddress;
+    }
+
+    public Recommendation() {
+    }
+
     public int getProductId() {
         return productId;
     }

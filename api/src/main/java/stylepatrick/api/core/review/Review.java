@@ -8,6 +8,18 @@ public class Review {
     private String content;
     private String serviceAddress;
 
+    public Review(int productId, int reviewId, String author, String subject, String content, String serviceAddress) {
+        this.productId = productId;
+        this.reviewId = reviewId;
+        this.author = author;
+        this.subject = subject;
+        this.content = content;
+        this.serviceAddress = serviceAddress;
+    }
+
+    public Review() {
+    }
+
     public int getProductId() {
         return productId;
     }

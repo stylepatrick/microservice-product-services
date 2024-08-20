@@ -9,6 +9,7 @@ allprojects {
             springBootVersion = '3.3.1'
             springCloudVersion = "2023.0.3"
             mapstructVersion = "1.5.5.Final"
+            resilience4jVersion = "2.2.0"
         }
     }
 }
