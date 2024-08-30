@@ -1,0 +1,8 @@
+rootProject.name = 'microservice-product-services'
+
+include 'product'
+include 'review'
+include 'recommendation'
+include 'composite-product'
+include 'api'
+include 'util'

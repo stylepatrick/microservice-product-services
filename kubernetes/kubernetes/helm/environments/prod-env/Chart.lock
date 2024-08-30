@@ -1,0 +1,21 @@
+dependencies:
+- name: common
+  repository: file://../../common
+  version: 1.0.0
+- name: product
+  repository: file://../../components/product
+  version: 1.0.0
+- name: recommendation
+  repository: file://../../components/recommendation
+  version: 1.0.0
+- name: review
+  repository: file://../../components/review
+  version: 1.0.0
+- name: product-composite
+  repository: file://../../components/product-composite
+  version: 1.0.0
+- name: zipkin-server
+  repository: file://../../components/zipkin-server
+  version: 1.0.0
+digest: sha256:e032c89303f79874fcc9e16bcb308422e0829d30469cb31535917176b408e6ef
+generated: "2024-08-30T20:04:16.3992559+02:00"

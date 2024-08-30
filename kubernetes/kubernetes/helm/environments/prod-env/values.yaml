@@ -1,0 +1,77 @@
+ingress:
+  host: localhost
+  paths:
+    - path: /product-composite
+      service: product-composite
+    - path: /actuator/health
+      service: product-composite
+    - path: /openapi
+      service: product-composite
+    - path: /webjars
+      service: product-composite
+
+secrets:
+
+  mysql-credentials:
+    SPRING_DATASOURCE_USERNAME: mysql-user-prod
+    SPRING_DATASOURCE_PASSWORD: mysql-pwd-prod
+
+product:
+  image:
+    tag: v1
+  env:
+    SPRING_PROFILES_ACTIVE: "docker,prod"
+  envFromSecretRefs:
+    - mongodb-credentials
+  resources:
+    requests:
+      memory: 200Mi
+    limits:
+      memory: 400Mi
+
+recommendation:
+  image:
+    tag: v1
+  env:
+    SPRING_PROFILES_ACTIVE: "docker,prod"
+  envFromSecretRefs:
+    - mongodb-credentials
+  resources:
+    requests:
+      memory: 200Mi
+    limits:
+      memory: 400Mi
+
+review:
+  image:
+    tag: v1
+  env:
+    SPRING_PROFILES_ACTIVE: "docker,prod"
+  envFromSecretRefs:
+    - mysql-credentials
+  resources:
+    requests:
+      memory: 200Mi
+    limits:
+      memory: 400Mi
+
+product-composite:
+  image:
+    tag: v1
+  env:
+    SPRING_PROFILES_ACTIVE: "docker,prod"
+  resources:
+    requests:
+      memory: 200Mi
+    limits:
+      memory: 400Mi
+
+zipkin-server:
+  env:
+    LOGGING_LEVEL_ROOT: WARN
+  resources:
+    requests:
+      memory: 300Mi
+    limits:
+      memory: 600Mi
+

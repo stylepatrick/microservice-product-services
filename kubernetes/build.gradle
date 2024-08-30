@@ -1,0 +1,33 @@
+description 'Microservice-Product-Services'
+
+allprojects {
+    group = 'stylepatrick'
+    version = '0.0.1'
+
+    buildscript {
+        ext {
+            springBootVersion = '3.3.1'
+            springCloudVersion = "2023.0.3"
+            mapstructVersion = "1.5.5.Final"
+            resilience4jVersion = "2.2.0"
+        }
+    }
+}
+
+tasks.register('printProjectName') {
+    doLast {
+        println project.name
+    }
+}
+
+tasks.register('printProjectDescription') {
+    doLast {
+        println project.description
+    }
+}
+
+tasks.register('printProjectVersion') {
+    doLast {
+        println project.version
+    }
+}

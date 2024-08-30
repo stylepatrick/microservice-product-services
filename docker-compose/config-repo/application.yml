@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+spring.cloud.stream.kafka.binder:
+  brokers: ${KAFKA_BROKER}
+  defaultBrokerPort: ${KAFKA_PORT}
+
+management.endpoint.health.show-details: "ALWAYS"
+management.endpoints.web.exposure.include: "health"
+
+management.zipkin.tracing.endpoint: http://zipkin-server:9411/api/v2/spans
+management.tracing.sampling.probability: 1.0
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${APP_EUREKA_USERNAME}:${APP_EUREKA_PASSWORD}@${APP_EUREKA_SERVER}:8761/eureka/
