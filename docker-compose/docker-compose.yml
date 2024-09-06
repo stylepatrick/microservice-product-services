@@ -134,7 +134,7 @@ services:
       APP_EUREKA_USERNAME: u
       APP_EUREKA_PASSWORD: p
     volumes:
-      - C:\Users\patrick.oberkofler\Documents\GitHub\microservice-product-services\config-repo:/config-repo
+      - C:\Users\patrick.oberkofler\Documents\GitHub\microservice-product-services\docker-compose\config-repo:/config-repo
 
   zipkin-server:
     image: openzipkin/zipkin:3.4

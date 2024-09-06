@@ -47,8 +47,9 @@ public class SecurityConfig {
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http, Converter<Jwt, AbstractAuthenticationToken> authenticationConverter) {
         Converter<Jwt, Mono<AbstractAuthenticationToken>> reactiveJwtAuthenticationConverter = new ReactiveJwtAuthenticationConverterAdapter(authenticationConverter);
         http
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchange -> exchange
-                        .pathMatchers("/openapi/**").permitAll()
+                      .pathMatchers("/openapi/**").permitAll()
                         .pathMatchers("/webjars/**").permitAll()
                         .pathMatchers("/actuator/**").permitAll()
                         .pathMatchers(HttpMethod.DELETE, "/product-composite/**")

@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: review
+  labels:
+    app: review
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: review
+  template:
+    metadata:
+      labels:
+        app: review
+    spec:
+      containers:
+        - name: review
+          image: hands-on/review
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_CONFIG_LOCATION
+              valueFrom:
+                configMapKeyRef:
+                  name: review-config-map
+                  key: SPRING_CONFIG_LOCATION
+            - name: MYSQL_REVIEW_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: review-config-map
+                  key: MYSQL_REVIEW_URL
+            - name: MYSQL_REVIEW_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_USER
+            - name: MYSQL_REVIEW_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_PASSWORD
+            - name: KAFKA_BROKER
+              valueFrom:
+                configMapKeyRef:
+                  name: review-config-map
+                  key: KAFKA_BROKER
+            - name: KAFKA_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: review-config-map
+                  key: KAFKA_PORT
+          volumeMounts:
+            - name: review
+              # To mount the folder to minikube following command is required!
+              # minikube mount C:\Users\patrick.oberkofler\Documents\GitHub\microservice-product-services\kubernetes\config-repo:/config-repo
+              mountPath: /config-repo
+      volumes:
+        - name: review
+          hostPath:
+            path: /config-repo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: review-service
+spec:
+  selector:
+    app: review
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 8080

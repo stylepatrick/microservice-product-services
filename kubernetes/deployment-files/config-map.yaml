@@ -49,3 +49,56 @@ data:
   KC_DB_URL_HOST: "keycloak-postgres-service"
   KC_DB_URL_DATABASE: "keycloak"
   KC_HTTP_RELATIVE_PATH: "/auth"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-config-map
+data:
+  KC_DB: "postgres"
+  KC_DB_URL_HOST: "keycloak-postgres-service"
+  KC_DB_URL_DATABASE: "keycloak"
+  KC_HTTP_RELATIVE_PATH: "/auth"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: product-config-map
+data:
+  SPRING_CONFIG_LOCATION: "file:/config-repo/application.yml,file:/config-repo/product.yml"
+  MONGO_PRODUCT_URL: "mongodb-service"
+  MONGO_PRODUCT_DATABASE: "product-db"
+  KAFKA_BROKER: "kafka-service"
+  KAFKA_PORT: "9092"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: recommendation-config-map
+data:
+  SPRING_CONFIG_LOCATION: "file:/config-repo/application.yml,file:/config-repo/recommendation.yml"
+  MONGO_RECOMMENDATION_URL: "mongodb-service"
+  MONGO_RECOMMENDATION_DATABASE: "recommendation-db"
+  KAFKA_BROKER: "kafka-service"
+  KAFKA_PORT: "9092"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: review-config-map
+data:
+  SPRING_CONFIG_LOCATION: "file:/config-repo/application.yml,file:/config-repo/review.yml"
+  MYSQL_REVIEW_URL: "jdbc:mysql://mysql-service/review-db"
+  KAFKA_BROKER: "kafka-service"
+  KAFKA_PORT: "9092"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: composite-product-config-map
+data:
+  SPRING_CONFIG_LOCATION: "file:/config-repo/application.yml,file:/config-repo/composite-product.yml"
+  APP_KEYCLOAK_SERVER: "keycloak-service"
+  APP_KEYCLOAK_REALM: "mps"
+  KAFKA_BROKER: "kafka-service"
+  KAFKA_PORT: "9092"

@@ -1,4 +1,4 @@
-spring.cloud.config.server.native.searchLocations: C:\Users\patrick.oberkofler\Documents\GitHub\microservice-product-services\config-repo
+spring.cloud.config.server.native.searchLocations: C:\Users\patrick.oberkofler\Documents\GitHub\microservice-product-services\docker-compose\config-repo
 
 app:
   username: u

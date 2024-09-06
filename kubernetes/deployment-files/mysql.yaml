@@ -35,7 +35,7 @@ spec:
               secretKeyRef:
                 name: mysql-secret
                 key: MYSQL_PASSWORD
-          - name: MYSQL_REVIEW_DATABASE
+          - name: MYSQL_DATABASE
             valueFrom:
               configMapKeyRef:
                 name: mysql-config-map
@@ -56,6 +56,5 @@ spec:
   selector:
     app: mysql
   ports:
-    - protocol: TCP
-      port: 3306
+    - port: 3306
       targetPort: 3306

@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product
+  labels:
+    app: product
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product
+  template:
+    metadata:
+      labels:
+        app: product
+    spec:
+      containers:
+        - name: product
+          image: hands-on/product
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_CONFIG_LOCATION
+              valueFrom:
+                configMapKeyRef:
+                  name: product-config-map
+                  key: SPRING_CONFIG_LOCATION
+            - name: MONGO_PRODUCT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: product-config-map
+                  key: MONGO_PRODUCT_URL
+            - name: MONGO_PRODUCT_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: product-config-map
+                  key: MONGO_PRODUCT_DATABASE
+            - name: KAFKA_BROKER
+              valueFrom:
+                configMapKeyRef:
+                  name: product-config-map
+                  key: KAFKA_BROKER
+            - name: KAFKA_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: product-config-map
+                  key: KAFKA_PORT
+          volumeMounts:
+            - name: product
+              # To mount the folder to minikube following command is required!
+              # minikube mount C:\Users\patrick.oberkofler\Documents\GitHub\microservice-product-services\kubernetes\config-repo:/config-repo
+              mountPath: /config-repo
+      volumes:
+        - name: product
+          hostPath:
+            path: /config-repo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-service
+spec:
+  selector:
+    app: product
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 8080

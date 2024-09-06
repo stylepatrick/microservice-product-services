@@ -7,13 +7,9 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 @Configuration
-// Only required without Eureka-Server
-// @ConfigurationProperties(prefix = "app")
 public class CompositeProductConfig {
 
-    private String productServiceUrl = "product";
-    private String recommendationServiceUrl = "recommendation";
-    private String reviewServiceUrl = "review";
-    private String compositeProductUrl = "composite-product";
-    private String configServerUrl = "config-server";
+    private String productServiceUrl = "product-service";
+    private String recommendationServiceUrl = "recommendation-service";
+    private String reviewServiceUrl = "review-service";
 }

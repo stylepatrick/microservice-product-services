@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: composite-product
+  labels:
+    app: composite-product
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: composite-product
+  template:
+    metadata:
+      labels:
+        app: composite-product
+    spec:
+      containers:
+        - name: composite-product
+          image: hands-on/composite-product
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_CONFIG_LOCATION
+              valueFrom:
+                configMapKeyRef:
+                  name: composite-product-config-map
+                  key: SPRING_CONFIG_LOCATION
+            - name: APP_KEYCLOAK_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: composite-product-config-map
+                  key: APP_KEYCLOAK_SERVER
+            - name: APP_KEYCLOAK_REALM
+              valueFrom:
+                configMapKeyRef:
+                  name: composite-product-config-map
+                  key: APP_KEYCLOAK_REALM
+            - name: KAFKA_BROKER
+              valueFrom:
+                configMapKeyRef:
+                  name: composite-product-config-map
+                  key: KAFKA_BROKER
+            - name: KAFKA_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: composite-product-config-map
+                  key: KAFKA_PORT
+          volumeMounts:
+            - name: composite-product
+              # To mount the folder to minikube following command is required!
+              # minikube mount C:\Users\patrick.oberkofler\Documents\GitHub\microservice-product-services\kubernetes\config-repo:/config-repo
+              mountPath: /config-repo
+      volumes:
+        - name: composite-product
+          hostPath:
+            path: /config-repo
+---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: composite-product-service
+#spec:
+#  type: NodePort
+#  selector:
+#    app: composite-product
+#  ports:
+#    - protocol: TCP
+#      port: 8080
+#      targetPort: 8080
+#      nodePort: 30080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: composite-product-service
+spec:
+  selector:
+    app: composite-product
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 8080

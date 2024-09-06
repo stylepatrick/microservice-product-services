@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recommendation
+  labels:
+    app: recommendation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: recommendation
+  template:
+    metadata:
+      labels:
+        app: recommendation
+    spec:
+      containers:
+        - name: recommendation
+          image: hands-on/recommendation
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_CONFIG_LOCATION
+              valueFrom:
+                configMapKeyRef:
+                  name: recommendation-config-map
+                  key: SPRING_CONFIG_LOCATION
+            - name: MONGO_RECOMMENDATION_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: recommendation-config-map
+                  key: MONGO_RECOMMENDATION_URL
+            - name: MONGO_RECOMMENDATION_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: recommendation-config-map
+                  key: MONGO_RECOMMENDATION_DATABASE
+            - name: KAFKA_BROKER
+              valueFrom:
+                configMapKeyRef:
+                  name: recommendation-config-map
+                  key: KAFKA_BROKER
+            - name: KAFKA_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: recommendation-config-map
+                  key: KAFKA_PORT
+          volumeMounts:
+            - name: recommendation
+              # To mount the folder to minikube following command is required!
+              # minikube mount C:\Users\patrick.oberkofler\Documents\GitHub\microservice-product-services\kubernetes\config-repo:/config-repo
+              mountPath: /config-repo
+      volumes:
+        - name: recommendation
+          hostPath:
+            path: /config-repo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: recommendation-service
+spec:
+  selector:
+    app: recommendation
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 8080
