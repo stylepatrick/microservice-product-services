@@ -5,7 +5,7 @@ metadata:
   labels:
     app: composite-product
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: composite-product
@@ -16,7 +16,7 @@ spec:
     spec:
       ### Required for Keycloak. It must be the IP Address of the keycloak-service
       hostAliases:
-        - ip: "10.104.81.209"
+        - ip: "10.99.223.146"
           hostnames:
             - "mps.internal"
       containers:

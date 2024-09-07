@@ -89,7 +89,7 @@ metadata:
   name: composite-product-config-map
 data:
   SPRING_CONFIG_LOCATION: "file:/config-repo/application.yml,file:/config-repo/composite-product.yml"
-  APP_KEYCLOAK_SERVER: "keycloak-service"
+  APP_KEYCLOAK_SERVER: "mps.internal"
   APP_KEYCLOAK_REALM: "mps"
   KAFKA_BROKER: "kafka-service"
   KAFKA_PORT: "9092"
