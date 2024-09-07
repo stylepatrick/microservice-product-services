@@ -49,16 +49,7 @@ data:
   KC_DB_URL_HOST: "keycloak-postgres-service"
   KC_DB_URL_DATABASE: "keycloak"
   KC_HTTP_RELATIVE_PATH: "/auth"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: keycloak-config-map
-data:
-  KC_DB: "postgres"
-  KC_DB_URL_HOST: "keycloak-postgres-service"
-  KC_DB_URL_DATABASE: "keycloak"
-  KC_HTTP_RELATIVE_PATH: "/auth"
+  KC_HOSTNAME: "mps.internal"
 ---
 apiVersion: v1
 kind: ConfigMap

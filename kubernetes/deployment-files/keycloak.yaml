@@ -38,6 +38,11 @@ spec:
                 secretKeyRef:
                   name: keycloak-postgres-secret
                   key: POSTGRES_PASSWORD
+            - name: KC_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: keycloak-config-map
+                  key: KC_HOSTNAME
             - name: KC_HTTP_RELATIVE_PATH
               valueFrom:
                 configMapKeyRef:
@@ -53,7 +58,11 @@ spec:
                 secretKeyRef:
                   name: keycloak-secret
                   key: KEYCLOAK_ADMIN_PASSWORD
-          args: ["start-dev"]
+          args: [
+            "start",
+            "--proxy-headers", "xforwarded",
+            "--http-enabled=true"
+          ]
           ports:
             - containerPort: 8080
 ---
