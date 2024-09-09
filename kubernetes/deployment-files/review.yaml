@@ -11,6 +11,11 @@ spec:
       app: review
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/scheme: http
+        prometheus.io/path: "/actuator/prometheus"
       labels:
         app: review
     spec:
@@ -20,6 +25,9 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
+          resources:
+            limits:
+              memory: 350Mi
           env:
             - name: SPRING_CONFIG_LOCATION
               valueFrom:

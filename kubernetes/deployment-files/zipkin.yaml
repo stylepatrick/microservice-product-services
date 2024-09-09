@@ -19,6 +19,9 @@ spec:
           image: openzipkin/zipkin:3.4
           ports:
             - containerPort: 9411
+          resources:
+            limits:
+              memory: 350Mi
           env:
             - name: STORAGE_TYPE
               value: mem

@@ -10,6 +10,7 @@ allprojects {
             springCloudVersion = "2023.0.3"
             mapstructVersion = "1.5.5.Final"
             resilience4jVersion = "2.2.0"
+            prometheusVersion = "1.13.3"
         }
     }
 }

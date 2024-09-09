@@ -11,12 +11,17 @@ spec:
       app: composite-product
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/scheme: http
+        prometheus.io/path: "/actuator/prometheus"
       labels:
         app: composite-product
     spec:
       ### Required for Keycloak. It must be the IP Address of the keycloak-service
       hostAliases:
-        - ip: "10.99.223.146"
+        - ip: "10.99.135.179"
           hostnames:
             - "mps.internal"
       containers:
@@ -25,6 +30,9 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
+          resources:
+            limits:
+              memory: 350Mi
           env:
             - name: SPRING_CONFIG_LOCATION
               valueFrom:

@@ -6,7 +6,8 @@ spring.cloud.stream.kafka.binder:
   defaultBrokerPort: ${KAFKA_PORT}
 
 management.endpoint.health.show-details: "ALWAYS"
-management.endpoints.web.exposure.include: "health"
+management.endpoints.web.exposure.include: "health,prometheus"
+management.metrics.tags.application: ${spring.application.name}
 
 management.zipkin.tracing.endpoint: http://zipkin-service:9411/api/v2/spans
 management.tracing.sampling.probability: 1.0
